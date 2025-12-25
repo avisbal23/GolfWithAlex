@@ -22,12 +22,23 @@ export function PlayerTile({
 }: PlayerTileProps) {
   const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isHoldRef = useRef(false);
+  const isTouchRef = useRef(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isHolding, setIsHolding] = useState(false);
 
   const borderClass = getScoreBorderClass(strokes, par);
 
-  const startHold = useCallback(() => {
+  const startHold = useCallback((isTouch: boolean) => {
+    // Prevent mouse events if we just had a touch event
+    if (!isTouch && isTouchRef.current) {
+      return;
+    }
+    if (isTouch) {
+      isTouchRef.current = true;
+      // Reset touch flag after a short delay
+      setTimeout(() => { isTouchRef.current = false; }, 500);
+    }
+    
     isHoldRef.current = false;
     setIsPressed(true);
     
@@ -43,7 +54,12 @@ export function PlayerTile({
     }, 400);
   }, [onDecrement]);
 
-  const endHold = useCallback(() => {
+  const endHold = useCallback((isTouch: boolean) => {
+    // Prevent mouse events if we just had a touch event
+    if (!isTouch && isTouchRef.current) {
+      return;
+    }
+    
     setIsPressed(false);
     setIsHolding(false);
     
@@ -103,11 +119,11 @@ export function PlayerTile({
         ${isPressed ? 'scale-[0.98]' : ''}
         ${isHolding ? 'scale-[0.96] opacity-90' : ''}
       `}
-      onMouseDown={startHold}
-      onMouseUp={endHold}
+      onMouseDown={() => startHold(false)}
+      onMouseUp={() => endHold(false)}
       onMouseLeave={cancelHold}
-      onTouchStart={startHold}
-      onTouchEnd={endHold}
+      onTouchStart={() => startHold(true)}
+      onTouchEnd={() => endHold(true)}
       onTouchCancel={cancelHold}
       data-testid={testId}
       aria-label={`${name}: ${strokes} strokes. Tap to add, hold to subtract.`}
