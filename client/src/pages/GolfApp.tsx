@@ -407,7 +407,7 @@ export function GolfApp() {
             onTouchEnd={handleTouchEnd}
             data-testid="scoring-area"
           >
-            <div className={`grid ${getGridClass()} gap-4 h-full`}>
+            <div className={`grid ${getGridClass()} gap-4 place-content-center h-full`}>
               {gameState.players.map((player, index) => (
                 <PlayerTile
                   key={player.id}
