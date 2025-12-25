@@ -72,7 +72,7 @@ export function Scorecard({
           </p>
         </div>
 
-        <ScrollArea className="w-full max-h-[60vh]">
+        <ScrollArea className="w-full">
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 bg-card z-10">
               <tr className="border-b" data-testid="row-header">
