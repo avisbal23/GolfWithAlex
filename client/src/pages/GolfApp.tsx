@@ -88,6 +88,14 @@ export function GolfApp() {
     updateGameState({ currentHolePar: par });
   }, [updateGameState]);
 
+  const handleResetHole = useCallback(() => {
+    const resetStrokes: { [playerId: string]: number } = {};
+    gameState.players.forEach((player) => {
+      resetStrokes[player.id] = 0;
+    });
+    updateGameState({ currentHoleStrokes: resetStrokes });
+  }, [gameState.players, updateGameState]);
+
   const saveCurrentHoleScores = useCallback(() => {
     const { players, currentHole, scores, currentHoleStrokes, currentHolePar } = gameState;
     
@@ -399,6 +407,7 @@ export function GolfApp() {
             par={gameState.currentHolePar}
             onParChange={handleParChange}
             onFinishHole={handleFinishHole}
+            onResetHole={handleResetHole}
             isLastHole={gameState.currentHole === gameState.roundSetup.holeCount}
           />
         </>

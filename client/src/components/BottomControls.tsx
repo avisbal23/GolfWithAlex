@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,7 @@ interface BottomControlsProps {
   par: number | null;
   onParChange: (par: number | null) => void;
   onFinishHole: () => void;
+  onResetHole: () => void;
   isLastHole: boolean;
 }
 
@@ -18,6 +19,7 @@ export function BottomControls({
   par,
   onParChange,
   onFinishHole,
+  onResetHole,
   isLastHole,
 }: BottomControlsProps) {
   const handleParChange = (value: string) => {
@@ -59,14 +61,25 @@ export function BottomControls({
         </div>
       </div>
 
-      <Button
-        className="w-full h-12 text-base font-semibold"
-        onClick={onFinishHole}
-        data-testid="button-finish-hole"
-      >
-        {isLastHole ? 'Finish Round' : 'Finish Hole'}
-        <ChevronRight className="w-5 h-5 ml-1" />
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          className="h-12"
+          onClick={onResetHole}
+          data-testid="button-reset-hole"
+        >
+          <RotateCcw className="w-4 h-4 mr-1" />
+          Reset
+        </Button>
+        <Button
+          className="flex-1 h-12 text-base font-semibold"
+          onClick={onFinishHole}
+          data-testid="button-finish-hole"
+        >
+          {isLastHole ? 'Finish Round' : 'Finish Hole'}
+          <ChevronRight className="w-5 h-5 ml-1" />
+        </Button>
+      </div>
     </div>
   );
 }
