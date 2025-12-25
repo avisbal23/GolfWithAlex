@@ -314,19 +314,124 @@ export function GolfApp() {
     }
   }, [gameState.roundSetup.date]);
 
-  // Get grid layout based on player count
-  const getGridClass = () => {
-    switch (gameState.players.length) {
-      case 1:
-        return 'grid-cols-1';
-      case 2:
-        return 'grid-cols-2';
-      case 3:
-      case 4:
-        return 'grid-cols-2 grid-rows-2';
-      default:
-        return 'grid-cols-1';
+  // Find player with longest name for 3-player layout
+  const getLongestNamePlayer = () => {
+    if (gameState.players.length !== 3) return null;
+    return gameState.players.reduce((longest, player) => 
+      player.name.length > longest.name.length ? player : longest
+    , gameState.players[0]);
+  };
+
+  // Render players based on count with custom layouts
+  const renderPlayerGrid = () => {
+    const players = gameState.players;
+    const count = players.length;
+
+    if (count === 1) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="w-3/4 max-w-[300px]">
+            <PlayerTile
+              key={players[0].id}
+              name={players[0].name}
+              strokes={gameState.currentHoleStrokes[players[0].id] || 0}
+              par={gameState.currentHolePar}
+              showHint={!hasInteracted}
+              onIncrement={() => handleIncrement(players[0].id)}
+              onDecrement={() => handleDecrement(players[0].id)}
+              testId="tile-player-0"
+              compact={true}
+            />
+          </div>
+        </div>
+      );
     }
+
+    if (count === 2) {
+      return (
+        <div className="grid grid-cols-2 gap-4 h-full place-content-center">
+          {players.map((player, index) => (
+            <PlayerTile
+              key={player.id}
+              name={player.name}
+              strokes={gameState.currentHoleStrokes[player.id] || 0}
+              par={gameState.currentHolePar}
+              showHint={!hasInteracted && index === 0}
+              onIncrement={() => handleIncrement(player.id)}
+              onDecrement={() => handleDecrement(player.id)}
+              testId={`tile-player-${index}`}
+              compact={false}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    if (count === 3) {
+      const longestNamePlayer = getLongestNamePlayer();
+      const topPlayers = players.filter(p => p !== longestNamePlayer);
+      const bottomPlayer = longestNamePlayer!;
+
+      return (
+        <div className="flex flex-col gap-4 h-full justify-center">
+          <div className="grid grid-cols-2 gap-4">
+            {topPlayers.map((player) => {
+              const originalIndex = players.indexOf(player);
+              return (
+                <PlayerTile
+                  key={player.id}
+                  name={player.name}
+                  strokes={gameState.currentHoleStrokes[player.id] || 0}
+                  par={gameState.currentHolePar}
+                  showHint={!hasInteracted && originalIndex === 0}
+                  onIncrement={() => handleIncrement(player.id)}
+                  onDecrement={() => handleDecrement(player.id)}
+                  testId={`tile-player-${originalIndex}`}
+                  compact={true}
+                />
+              );
+            })}
+          </div>
+          <div className="flex justify-center">
+            <div className="w-3/4">
+              <PlayerTile
+                key={bottomPlayer.id}
+                name={bottomPlayer.name}
+                strokes={gameState.currentHoleStrokes[bottomPlayer.id] || 0}
+                par={gameState.currentHolePar}
+                showHint={false}
+                onIncrement={() => handleIncrement(bottomPlayer.id)}
+                onDecrement={() => handleDecrement(bottomPlayer.id)}
+                testId={`tile-player-${players.indexOf(bottomPlayer)}`}
+                compact={true}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (count === 4) {
+      return (
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 h-full place-content-center">
+          {players.map((player, index) => (
+            <PlayerTile
+              key={player.id}
+              name={player.name}
+              strokes={gameState.currentHoleStrokes[player.id] || 0}
+              par={gameState.currentHolePar}
+              showHint={!hasInteracted && index === 0}
+              onIncrement={() => handleIncrement(player.id)}
+              onDecrement={() => handleDecrement(player.id)}
+              testId={`tile-player-${index}`}
+              compact={true}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    return null;
   };
 
   // Show profile page
@@ -407,21 +512,7 @@ export function GolfApp() {
             onTouchEnd={handleTouchEnd}
             data-testid="scoring-area"
           >
-            <div className={`grid ${getGridClass()} gap-4 place-content-center h-full`}>
-              {gameState.players.map((player, index) => (
-                <PlayerTile
-                  key={player.id}
-                  name={player.name}
-                  strokes={gameState.currentHoleStrokes[player.id] || 0}
-                  par={gameState.currentHolePar}
-                  showHint={!hasInteracted && index === 0}
-                  onIncrement={() => handleIncrement(player.id)}
-                  onDecrement={() => handleDecrement(player.id)}
-                  testId={`tile-player-${index}`}
-                  compact={gameState.players.length >= 3}
-                />
-              ))}
-            </div>
+            {renderPlayerGrid()}
           </main>
 
           <BottomControls
