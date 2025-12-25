@@ -49,9 +49,9 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 95% 50%;
   --score-birdie-foreground: 45 90% 15%;
-  --score-eagle: 210 90% 50%;
+  --score-eagle: 30 95% 50%;
   --score-eagle-foreground: 0 0% 100%;
-  --score-albatross: 280 90% 55%;
+  --score-albatross: 210 90% 50%;
   --score-albatross-foreground: 0 0% 100%;
   --score-bogey: 270 60% 60%;
   --score-bogey-foreground: 270 70% 15%;
@@ -139,9 +139,9 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 90% 55%;
   --score-birdie-foreground: 45 90% 10%;
-  --score-eagle: 210 85% 55%;
+  --score-eagle: 30 90% 55%;
   --score-eagle-foreground: 0 0% 100%;
-  --score-albatross: 280 85% 60%;
+  --score-albatross: 210 85% 55%;
   --score-albatross-foreground: 0 0% 100%;
   --score-bogey: 270 55% 55%;
   --score-bogey-foreground: 270 100% 95%;
