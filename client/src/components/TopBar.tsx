@@ -1,4 +1,4 @@
-import { Sun, Moon, HelpCircle, BarChart3, User, LogIn } from 'lucide-react';
+import { Sun, Moon, HelpCircle, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from './ThemeProvider';
 import { useAuth } from '@/hooks/use-auth';
@@ -21,13 +21,12 @@ export function TopBar({ onHelpClick, onViewScoreClick, onProfileClick }: TopBar
 
       <div className="flex items-center gap-1">
         <Button
-          size="icon"
-          variant="ghost"
+          size="sm"
+          variant="outline"
           onClick={onViewScoreClick}
           data-testid="button-view-score"
-          aria-label="View current score"
         >
-          <BarChart3 className="w-5 h-5" />
+          View Current Scorecard
         </Button>
 
         <Button
