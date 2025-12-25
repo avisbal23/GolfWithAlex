@@ -147,7 +147,7 @@ export function ScoreModal({
                 <>
                   <tr className="border-b border-t-2" data-testid="modal-row-front9">
                     <td className="p-2 text-center font-medium" data-testid="modal-label-front9">
-                      F9
+                      Front 9
                     </td>
                     {players.map((player, playerIndex) => (
                       <td
@@ -161,7 +161,7 @@ export function ScoreModal({
                   </tr>
                   <tr className="border-b" data-testid="modal-row-back9">
                     <td className="p-2 text-center font-medium" data-testid="modal-label-back9">
-                      B9
+                      Back 9
                     </td>
                     {players.map((player, playerIndex) => (
                       <td

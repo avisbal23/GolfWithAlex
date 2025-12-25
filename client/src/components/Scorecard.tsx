@@ -118,7 +118,7 @@ export function Scorecard({
               {setup.holeCount === 18 && (
                 <tr className="border-b border-t-2" data-testid="row-front9">
                   <td className="p-2 text-center font-medium" data-testid="label-front9">
-                    F9
+                    Front 9
                   </td>
                   {players.map((player, playerIndex) => (
                     <td
@@ -134,7 +134,7 @@ export function Scorecard({
               {setup.holeCount === 18 && (
                 <tr className="border-b" data-testid="row-back9">
                   <td className="p-2 text-center font-medium" data-testid="label-back9">
-                    B9
+                    Back 9
                   </td>
                   {players.map((player, playerIndex) => (
                     <td
