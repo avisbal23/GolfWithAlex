@@ -350,7 +350,7 @@ export function GolfApp() {
     if (count === 2) {
       return (
         <div className="flex items-center justify-center h-full">
-          <div className="grid grid-cols-2 gap-4 w-full max-h-[320px]">
+          <div className="grid grid-cols-2 gap-3 w-full">
             {players.map((player, index) => (
               <PlayerTile
                 key={player.id}
@@ -375,8 +375,8 @@ export function GolfApp() {
       const bottomPlayer = longestNamePlayer!;
 
       return (
-        <div className="flex flex-col gap-4 h-full justify-center">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-3 h-full justify-center">
+          <div className="grid grid-cols-2 gap-3">
             {topPlayers.map((player) => {
               const originalIndex = players.indexOf(player);
               return (
@@ -415,7 +415,7 @@ export function GolfApp() {
 
     if (count === 4) {
       return (
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 h-full place-content-center">
+        <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full place-content-center">
           {players.map((player, index) => (
             <PlayerTile
               key={player.id}
@@ -444,14 +444,14 @@ export function GolfApp() {
   // Show scorecard when round is complete
   if (gameState.isRoundComplete && !showSubtotal) {
     return (
-      <div className="flex flex-col h-screen max-h-screen bg-background">
+      <div className="flex flex-col h-[100dvh] bg-background">
         <TopBar
           onHelpClick={() => setShowHelp(true)}
           onViewScoreClick={() => setShowScore(true)}
           onProfileClick={() => setShowProfile(true)}
         />
         
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 min-h-0 overflow-auto">
           <Scorecard
             players={gameState.players}
             scores={gameState.scores}
@@ -488,7 +488,7 @@ export function GolfApp() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-h-screen bg-background overflow-hidden">
+    <div className="flex flex-col h-[100dvh] bg-background overflow-hidden">
       <TopBar
         onHelpClick={() => setShowHelp(true)}
         onViewScoreClick={() => setShowScore(true)}
@@ -510,7 +510,7 @@ export function GolfApp() {
         <>
           <main
             ref={scoringAreaRef}
-            className="flex-1 p-4 overflow-hidden"
+            className="flex-1 min-h-0 p-3 overflow-hidden"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             data-testid="scoring-area"

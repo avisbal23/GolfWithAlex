@@ -14,8 +14,8 @@ export function TopBar({ onHelpClick, onViewScoreClick, onProfileClick }: TopBar
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <header className="h-14 px-4 flex items-center justify-between gap-2 border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50" data-testid="container-top-bar">
-      <h1 className="text-lg font-semibold tracking-tight text-foreground" data-testid="text-app-title">
+    <header className="h-11 px-3 flex items-center justify-between gap-2 border-b bg-card/80 backdrop-blur-sm pt-[env(safe-area-inset-top)]" data-testid="container-top-bar">
+      <h1 className="text-base font-semibold tracking-tight text-foreground" data-testid="text-app-title">
         GolfWithAlex
       </h1>
 

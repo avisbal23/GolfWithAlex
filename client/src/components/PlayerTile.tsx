@@ -116,8 +116,8 @@ export function PlayerTile({
     <button
       type="button"
       className={`
-        relative flex flex-col w-full ${compact ? 'min-h-[140px] max-h-[200px]' : 'min-h-[280px] max-h-[400px]'}
-        rounded-2xl border-[3px] p-4 transition-all duration-100
+        relative flex flex-col w-full ${compact ? 'min-h-[100px] max-h-[160px]' : 'min-h-[180px] max-h-[260px]'}
+        rounded-xl border-[3px] p-3 transition-all duration-100
         select-none touch-manipulation cursor-pointer
         ${borderClass}
         ${getBackgroundStyle()}
@@ -133,21 +133,21 @@ export function PlayerTile({
       data-testid={testId}
       aria-label={`${name}: ${strokes} strokes. Tap to add, hold to subtract.`}
     >
-      <div className="w-full pb-2 mb-2 border-b-2 border-current/20">
-        <span className="text-lg font-medium truncate block text-center" data-testid={`${testId}-name`}>
+      <div className="w-full pb-1 mb-1 border-b-2 border-current/20">
+        <span className="text-base font-medium truncate block text-center" data-testid={`${testId}-name`}>
           {name}
         </span>
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <span className="text-5xl font-bold tabular-nums" data-testid={`${testId}-strokes`}>
+        <span className="text-4xl font-bold tabular-nums" data-testid={`${testId}-strokes`}>
           {strokes}
         </span>
       </div>
 
       {showHint && (
-        <div className="absolute bottom-3 left-0 right-0 text-center" data-testid={`${testId}-hint`}>
-          <span className="text-xs text-muted-foreground opacity-60">
+        <div className="absolute bottom-2 left-0 right-0 text-center" data-testid={`${testId}-hint`}>
+          <span className="text-[10px] text-muted-foreground opacity-60">
             tap +1 / hold -1
           </span>
         </div>

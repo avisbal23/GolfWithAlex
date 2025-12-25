@@ -32,13 +32,13 @@ export function BottomControls({
   };
 
   return (
-    <div className="px-4 py-3 border-t bg-card/80 backdrop-blur-sm space-y-3 sticky bottom-0 z-50">
-      <div className="flex items-center justify-center gap-4">
+    <div className="px-3 py-2 border-t bg-card/80 backdrop-blur-sm space-y-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+      <div className="flex items-center justify-center gap-3">
         <div className="text-center" data-testid="text-hole-indicator">
-          <span className="text-lg font-semibold" data-testid="text-current-hole">
+          <span className="text-base font-semibold" data-testid="text-current-hole">
             Hole {currentHole}
           </span>
-          <span className="text-muted-foreground" data-testid="text-total-holes"> / {totalHoles}</span>
+          <span className="text-sm text-muted-foreground" data-testid="text-total-holes"> / {totalHoles}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -55,7 +55,7 @@ export function BottomControls({
             value={par ?? ''}
             onChange={(e) => handleParChange(e.target.value)}
             placeholder="?"
-            className="w-14 h-10 text-center text-lg font-semibold"
+            className="w-12 h-8 text-center text-base font-semibold"
             data-testid="input-par"
           />
         </div>
@@ -64,7 +64,7 @@ export function BottomControls({
       <div className="flex gap-2">
         <Button
           variant="outline"
-          className="h-12"
+          size="sm"
           onClick={onResetHole}
           data-testid="button-reset-hole"
         >
@@ -72,12 +72,12 @@ export function BottomControls({
           Reset
         </Button>
         <Button
-          className="flex-1 h-12 text-base font-semibold"
+          className="flex-1"
           onClick={onFinishHole}
           data-testid="button-finish-hole"
         >
           {isLastHole ? 'Finish Round' : 'Finish Hole'}
-          <ChevronRight className="w-5 h-5 ml-1" />
+          <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
       </div>
     </div>
