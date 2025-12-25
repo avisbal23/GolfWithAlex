@@ -143,8 +143,8 @@ export function Scorecard({
           </div>
         </ScrollArea>
 
-        <div className="pt-4 mt-4 border-t flex items-center justify-between text-xs text-muted-foreground">
-          <span>GolfWithAlex</span>
+        <div className="pt-4 mt-4 border-t flex items-center justify-between text-xs text-muted-foreground" data-testid="container-watermark">
+          <span data-testid="text-app-name">GolfWithAlex</span>
           <a
             href="https://golfwithalex.me"
             target="_blank"

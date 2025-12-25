@@ -47,9 +47,9 @@ export function SubtotalModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="sm:max-w-sm" data-testid="dialog-subtotal">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-center">
+          <DialogTitle className="text-xl font-semibold text-center" data-testid="text-subtotal-title">
             {type === 'front9' ? 'Front 9 Complete!' : 'Round Complete!'}
           </DialogTitle>
         </DialogHeader>

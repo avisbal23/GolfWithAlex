@@ -15,15 +15,15 @@ interface HelpModalProps {
 export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="dialog-help">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold" data-testid="text-help-title">
             How to use GolfWithAlex
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 text-base">
-          <ol className="list-decimal list-inside space-y-3 text-foreground/90">
+        <div className="space-y-4 text-base" data-testid="container-help-content">
+          <ol className="list-decimal list-inside space-y-3 text-foreground/90" data-testid="list-help-instructions">
             <li>Enter player names (1-4)</li>
             <li>Tap a player to add a stroke</li>
             <li>Tap and hold to remove a stroke</li>
@@ -33,9 +33,9 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <li>At the end, export your scorecard to share on socials</li>
           </ol>
 
-          <div className="pt-4 border-t">
-            <h4 className="font-medium mb-2">Score Colors</h4>
-            <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="pt-4 border-t" data-testid="container-score-colors">
+            <h4 className="font-medium mb-2" data-testid="text-score-colors-title">Score Colors</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm" data-testid="grid-score-colors">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded score-birdie" />
                 <span>Birdie (-1)</span>

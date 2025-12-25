@@ -113,19 +113,19 @@ export function PlayerTile({
       aria-label={`${name}: ${strokes} strokes. Tap to add, hold to subtract.`}
     >
       <div className="w-full pb-2 mb-2 border-b-2 border-current/20">
-        <span className="text-lg font-medium truncate block text-center">
+        <span className="text-lg font-medium truncate block text-center" data-testid={`${testId}-name`}>
           {name}
         </span>
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <span className="text-5xl font-bold tabular-nums">
+        <span className="text-5xl font-bold tabular-nums" data-testid={`${testId}-strokes`}>
           {strokes}
         </span>
       </div>
 
       {showHint && (
-        <div className="absolute bottom-3 left-0 right-0 text-center">
+        <div className="absolute bottom-3 left-0 right-0 text-center" data-testid={`${testId}-hint`}>
           <span className="text-xs text-muted-foreground opacity-60">
             tap +1 / hold -1
           </span>

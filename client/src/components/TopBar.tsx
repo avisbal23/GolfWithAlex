@@ -11,8 +11,8 @@ export function TopBar({ onHelpClick, onViewScoreClick }: TopBarProps) {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="h-14 px-4 flex items-center justify-between gap-2 border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-      <h1 className="text-lg font-semibold tracking-tight text-foreground">
+    <header className="h-14 px-4 flex items-center justify-between gap-2 border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50" data-testid="container-top-bar">
+      <h1 className="text-lg font-semibold tracking-tight text-foreground" data-testid="text-app-title">
         GolfWithAlex
       </h1>
 

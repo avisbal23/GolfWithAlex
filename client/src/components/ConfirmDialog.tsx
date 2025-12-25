@@ -31,10 +31,10 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent>
+      <AlertDialogContent data-testid="dialog-confirm">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle data-testid="text-confirm-title">{title}</AlertDialogTitle>
+          <AlertDialogDescription data-testid="text-confirm-description">{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose} data-testid="button-cancel-confirm">

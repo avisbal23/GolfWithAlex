@@ -90,9 +90,9 @@ export function ScoreModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh]">
+      <DialogContent className="sm:max-w-lg max-h-[85vh]" data-testid="dialog-score">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold" data-testid="text-score-title">
             Current Score
           </DialogTitle>
         </DialogHeader>
