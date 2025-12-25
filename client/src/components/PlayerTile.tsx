@@ -29,14 +29,12 @@ export function PlayerTile({
   const borderClass = getScoreBorderClass(strokes, par);
 
   const startHold = useCallback((isTouch: boolean) => {
-    // Prevent mouse events if we just had a touch event
+    // Prevent mouse events if we're in touch mode
     if (!isTouch && isTouchRef.current) {
       return;
     }
     if (isTouch) {
       isTouchRef.current = true;
-      // Reset touch flag after a short delay
-      setTimeout(() => { isTouchRef.current = false; }, 500);
     }
     
     isHoldRef.current = false;
@@ -55,7 +53,7 @@ export function PlayerTile({
   }, [onDecrement]);
 
   const endHold = useCallback((isTouch: boolean) => {
-    // Prevent mouse events if we just had a touch event
+    // Prevent mouse events if we're in touch mode
     if (!isTouch && isTouchRef.current) {
       return;
     }
@@ -77,6 +75,11 @@ export function PlayerTile({
     }
     
     isHoldRef.current = false;
+    
+    // Reset touch flag after processing, with delay to block any pending mouse events
+    if (isTouch) {
+      setTimeout(() => { isTouchRef.current = false; }, 100);
+    }
   }, [onIncrement]);
 
   const cancelHold = useCallback(() => {
