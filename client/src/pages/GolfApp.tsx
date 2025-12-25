@@ -8,6 +8,7 @@ import { ScoreModal } from '@/components/ScoreModal';
 import { SubtotalModal } from '@/components/SubtotalModal';
 import { Scorecard } from '@/components/Scorecard';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { BirdieCelebration } from '@/components/BirdieCelebration';
 import {
   GameState,
   Player,
@@ -26,6 +27,7 @@ export function GolfApp() {
   const [showSubtotal, setShowSubtotal] = useState<'front9' | 'round' | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [showBirdieCelebration, setShowBirdieCelebration] = useState(false);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const scoringAreaRef = useRef<HTMLDivElement>(null);
@@ -144,8 +146,19 @@ export function GolfApp() {
   }, [gameState]);
 
   const handleFinishHole = useCallback(() => {
-    const { currentHole, roundSetup } = gameState;
+    const { currentHole, roundSetup, players, currentHoleStrokes, currentHolePar } = gameState;
     const totalHoles = roundSetup.holeCount;
+    
+    // Check if any player got a birdie or better
+    const hasBirdie = currentHolePar !== null && currentHolePar > 0 && 
+      players.some((player) => {
+        const strokes = currentHoleStrokes[player.id] || 0;
+        return strokes > 0 && strokes < currentHolePar;
+      });
+    
+    if (hasBirdie) {
+      setShowBirdieCelebration(true);
+    }
     
     // Save current hole scores
     const newScores = saveCurrentHoleScores();
@@ -442,6 +455,11 @@ export function GolfApp() {
         description="This will clear all current scores and start a fresh round. This action cannot be undone."
         confirmText="New Round"
         cancelText="Cancel"
+      />
+
+      <BirdieCelebration
+        isVisible={showBirdieCelebration}
+        onComplete={() => setShowBirdieCelebration(false)}
       />
     </div>
   );
