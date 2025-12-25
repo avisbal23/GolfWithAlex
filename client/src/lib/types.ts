@@ -26,6 +26,7 @@ export interface GameState {
   scores: PlayerScores;
   roundSetup: RoundSetup;
   isRoundComplete: boolean;
+  hasStarted: boolean;
   currentHoleStrokes: { [playerId: string]: number };
   currentHolePar: number | null;
 }
@@ -74,6 +75,7 @@ export function createInitialGameState(): GameState {
     scores: {},
     roundSetup: { ...DEFAULT_ROUND_SETUP },
     isRoundComplete: false,
+    hasStarted: false,
     currentHoleStrokes: {},
     currentHolePar: null,
   };

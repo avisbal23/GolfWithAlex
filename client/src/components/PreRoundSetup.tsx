@@ -16,18 +16,22 @@ interface PreRoundSetupProps {
   setup: RoundSetup;
   players: Player[];
   currentHole: number;
+  hasStarted: boolean;
   onSetupChange: (setup: RoundSetup) => void;
   onPlayersChange: (players: Player[]) => void;
+  onStart: () => void;
 }
 
 export function PreRoundSetup({
   setup,
   players,
   currentHole,
+  hasStarted,
   onSetupChange,
   onPlayersChange,
+  onStart,
 }: PreRoundSetupProps) {
-  const [isExpanded, setIsExpanded] = useState(currentHole === 1);
+  const [isExpanded, setIsExpanded] = useState(!hasStarted);
 
   useEffect(() => {
     if (currentHole > 1 && isExpanded) {
@@ -59,7 +63,8 @@ export function PreRoundSetup({
     );
   };
 
-  if (currentHole > 1 && !isExpanded) {
+  // Show collapsed view only after round has started and not expanded
+  if (hasStarted && !isExpanded) {
     return (
       <button
         onClick={() => setIsExpanded(true)}
@@ -79,7 +84,7 @@ export function PreRoundSetup({
 
   return (
     <div className="px-4 py-4 bg-muted/30 border-b space-y-4">
-      {currentHole > 1 && (
+      {hasStarted && (
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Round Details</span>
           <Button
@@ -232,6 +237,17 @@ export function PreRoundSetup({
           ))}
         </div>
       </div>
+
+      {!hasStarted && (
+        <Button
+          className="w-full mt-2"
+          size="lg"
+          onClick={onStart}
+          data-testid="button-start-round"
+        >
+          Start Round
+        </Button>
+      )}
     </div>
   );
 }

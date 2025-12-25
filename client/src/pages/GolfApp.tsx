@@ -232,6 +232,10 @@ export function GolfApp() {
     touchStartRef.current = null;
   }, [handlePreviousHole, handleFinishHole]);
 
+  const handleStartRound = useCallback(() => {
+    updateGameState({ hasStarted: true });
+  }, [updateGameState]);
+
   const handleNewRound = useCallback(() => {
     setShowResetConfirm(true);
   }, []);
@@ -358,41 +362,47 @@ export function GolfApp() {
         setup={gameState.roundSetup}
         players={gameState.players}
         currentHole={gameState.currentHole}
+        hasStarted={gameState.hasStarted}
         onSetupChange={handleSetupChange}
         onPlayersChange={handlePlayersChange}
+        onStart={handleStartRound}
       />
 
-      <main
-        ref={scoringAreaRef}
-        className="flex-1 p-4 overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        data-testid="scoring-area"
-      >
-        <div className={`grid ${getGridClass()} gap-4 h-full`}>
-          {gameState.players.map((player, index) => (
-            <PlayerTile
-              key={player.id}
-              name={player.name}
-              strokes={gameState.currentHoleStrokes[player.id] || 0}
-              par={gameState.currentHolePar}
-              showHint={!hasInteracted && index === 0}
-              onIncrement={() => handleIncrement(player.id)}
-              onDecrement={() => handleDecrement(player.id)}
-              testId={`tile-player-${index}`}
-            />
-          ))}
-        </div>
-      </main>
+      {gameState.hasStarted && (
+        <>
+          <main
+            ref={scoringAreaRef}
+            className="flex-1 p-4 overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            data-testid="scoring-area"
+          >
+            <div className={`grid ${getGridClass()} gap-4 h-full`}>
+              {gameState.players.map((player, index) => (
+                <PlayerTile
+                  key={player.id}
+                  name={player.name}
+                  strokes={gameState.currentHoleStrokes[player.id] || 0}
+                  par={gameState.currentHolePar}
+                  showHint={!hasInteracted && index === 0}
+                  onIncrement={() => handleIncrement(player.id)}
+                  onDecrement={() => handleDecrement(player.id)}
+                  testId={`tile-player-${index}`}
+                />
+              ))}
+            </div>
+          </main>
 
-      <BottomControls
-        currentHole={gameState.currentHole}
-        totalHoles={gameState.roundSetup.holeCount}
-        par={gameState.currentHolePar}
-        onParChange={handleParChange}
-        onFinishHole={handleFinishHole}
-        isLastHole={gameState.currentHole === gameState.roundSetup.holeCount}
-      />
+          <BottomControls
+            currentHole={gameState.currentHole}
+            totalHoles={gameState.roundSetup.holeCount}
+            par={gameState.currentHolePar}
+            onParChange={handleParChange}
+            onFinishHole={handleFinishHole}
+            isLastHole={gameState.currentHole === gameState.roundSetup.holeCount}
+          />
+        </>
+      )}
 
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       
