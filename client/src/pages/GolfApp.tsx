@@ -418,6 +418,7 @@ export function GolfApp() {
                   onIncrement={() => handleIncrement(player.id)}
                   onDecrement={() => handleDecrement(player.id)}
                   testId={`tile-player-${index}`}
+                  compact={gameState.players.length >= 3}
                 />
               ))}
             </div>

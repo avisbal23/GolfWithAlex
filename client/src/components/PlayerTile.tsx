@@ -9,6 +9,7 @@ interface PlayerTileProps {
   onIncrement: () => void;
   onDecrement: () => void;
   testId: string;
+  compact?: boolean;
 }
 
 export function PlayerTile({
@@ -19,6 +20,7 @@ export function PlayerTile({
   onIncrement,
   onDecrement,
   testId,
+  compact = false,
 }: PlayerTileProps) {
   const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isHoldRef = useRef(false);
@@ -114,7 +116,7 @@ export function PlayerTile({
     <button
       type="button"
       className={`
-        relative flex flex-col w-full min-h-[280px] max-h-[400px]
+        relative flex flex-col w-full ${compact ? 'min-h-[140px] max-h-[200px]' : 'min-h-[280px] max-h-[400px]'}
         rounded-2xl border-[3px] p-4 transition-all duration-100
         select-none touch-manipulation cursor-pointer
         ${borderClass}
