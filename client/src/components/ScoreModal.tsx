@@ -32,18 +32,6 @@ export function ScoreModal({
 }: ScoreModalProps) {
   const holes = Array.from({ length: totalHoles }, (_, i) => i + 1);
 
-  const getPlayerTotal = (playerId: string): number => {
-    const playerScores = scores[playerId] || [];
-    let total = playerScores.reduce((sum, s) => sum + (s?.strokes || 0), 0);
-    
-    // Add current hole strokes if on current hole
-    if (currentHole <= totalHoles) {
-      total += currentHoleStrokes[playerId] || 0;
-    }
-    
-    return total;
-  };
-
   const getHoleScore = (playerId: string, hole: number) => {
     if (hole === currentHole) {
       return {
@@ -64,7 +52,6 @@ export function ScoreModal({
       total += playerScores[i]?.strokes || 0;
     }
     
-    // Include current hole if within front 9
     if (currentHole <= 9) {
       total += currentHoleStrokes[playerId] || 0;
     }
@@ -80,8 +67,18 @@ export function ScoreModal({
       total += playerScores[i]?.strokes || 0;
     }
     
-    // Include current hole if within back 9
     if (currentHole > 9 && currentHole <= 18) {
+      total += currentHoleStrokes[playerId] || 0;
+    }
+    
+    return total;
+  };
+
+  const getPlayerTotal = (playerId: string): number => {
+    const playerScores = scores[playerId] || [];
+    let total = playerScores.reduce((sum, s) => sum + (s?.strokes || 0), 0);
+    
+    if (currentHole <= totalHoles) {
       total += currentHoleStrokes[playerId] || 0;
     }
     
@@ -93,86 +90,107 @@ export function ScoreModal({
       <DialogContent className="sm:max-w-lg max-h-[85vh]" data-testid="dialog-score">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold" data-testid="text-score-title">
-            Current Score
+            Current Scorecard
           </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[60vh]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="border-b" data-testid="modal-row-header">
-                  <th className="sticky left-0 bg-background p-2 text-left font-medium min-w-[80px]" data-testid="modal-header-player">
-                    Player
-                  </th>
-                  {holes.map((hole) => (
-                    <th
-                      key={hole}
-                      className={`p-2 text-center font-medium min-w-[36px] ${
-                        hole === currentHole ? 'bg-primary/10' : ''
-                      }`}
-                      data-testid={`modal-header-hole-${hole}`}
-                    >
-                      {hole}
-                    </th>
-                  ))}
-                  {totalHoles === 18 && (
-                    <>
-                      <th className="p-2 text-center font-medium min-w-[40px] border-l-2" data-testid="modal-header-front9">
-                        F9
-                      </th>
-                      <th className="p-2 text-center font-medium min-w-[40px]" data-testid="modal-header-back9">
-                        B9
-                      </th>
-                    </>
-                  )}
-                  <th className="p-2 text-center font-medium min-w-[44px] border-l-2" data-testid="modal-header-total">
-                    Tot
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 bg-background z-10">
+              <tr className="border-b" data-testid="modal-row-header">
+                <th className="p-2 text-center font-medium min-w-[40px]" data-testid="modal-header-hole">
+                  Hole
+                </th>
                 {players.map((player, playerIndex) => (
-                  <tr key={player.id} className="border-b" data-testid={`modal-row-player-${playerIndex}`}>
-                    <td className="sticky left-0 bg-background p-2 font-medium truncate max-w-[100px]" data-testid={`modal-text-player-name-${playerIndex}`}>
-                      {player.name}
-                    </td>
-                    {holes.map((hole) => {
-                      const score = getHoleScore(player.id, hole);
-                      const colorClass = score && score.strokes > 0 
-                        ? getScoreColorClass(score.strokes, score.par)
-                        : '';
-                      
-                      return (
-                        <td
-                          key={hole}
-                          className={`p-2 text-center ${
-                            hole === currentHole ? 'bg-primary/5' : ''
-                          } ${colorClass ? colorClass + ' rounded-sm' : ''}`}
-                          data-testid={`modal-cell-score-${playerIndex}-${hole}`}
-                        >
-                          {score && score.strokes > 0 ? score.strokes : '-'}
-                        </td>
-                      );
-                    })}
-                    {totalHoles === 18 && (
-                      <>
-                        <td className="p-2 text-center font-medium border-l-2" data-testid={`modal-text-front9-${playerIndex}`}>
-                          {getFront9Total(player.id) || '-'}
-                        </td>
-                        <td className="p-2 text-center font-medium" data-testid={`modal-text-back9-${playerIndex}`}>
-                          {getBack9Total(player.id) || '-'}
-                        </td>
-                      </>
-                    )}
-                    <td className="p-2 text-center font-bold border-l-2" data-testid={`modal-text-total-${playerIndex}`}>
-                      {getPlayerTotal(player.id) || '-'}
-                    </td>
-                  </tr>
+                  <th
+                    key={player.id}
+                    className="p-2 text-center font-medium truncate max-w-[80px]"
+                    data-testid={`modal-header-player-${playerIndex}`}
+                  >
+                    {player.name}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </tr>
+            </thead>
+            <tbody>
+              {holes.map((hole) => (
+                <tr
+                  key={hole}
+                  className={`border-b ${hole === currentHole ? 'bg-primary/5' : ''}`}
+                  data-testid={`modal-row-hole-${hole}`}
+                >
+                  <td
+                    className={`p-2 text-center font-medium ${hole === currentHole ? 'bg-primary/10' : ''}`}
+                    data-testid={`modal-text-hole-${hole}`}
+                  >
+                    {hole}
+                  </td>
+                  {players.map((player, playerIndex) => {
+                    const score = getHoleScore(player.id, hole);
+                    const colorClass = score && score.strokes > 0 
+                      ? getScoreColorClass(score.strokes, score.par)
+                      : '';
+                    
+                    return (
+                      <td
+                        key={player.id}
+                        className={`p-2 text-center ${colorClass ? colorClass + ' rounded-sm' : ''}`}
+                        data-testid={`modal-cell-score-${playerIndex}-${hole}`}
+                      >
+                        {score && score.strokes > 0 ? score.strokes : '-'}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+              {totalHoles === 18 && (
+                <>
+                  <tr className="border-b border-t-2" data-testid="modal-row-front9">
+                    <td className="p-2 text-center font-medium" data-testid="modal-label-front9">
+                      F9
+                    </td>
+                    {players.map((player, playerIndex) => (
+                      <td
+                        key={player.id}
+                        className="p-2 text-center font-medium"
+                        data-testid={`modal-text-front9-${playerIndex}`}
+                      >
+                        {getFront9Total(player.id) || '-'}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-b" data-testid="modal-row-back9">
+                    <td className="p-2 text-center font-medium" data-testid="modal-label-back9">
+                      B9
+                    </td>
+                    {players.map((player, playerIndex) => (
+                      <td
+                        key={player.id}
+                        className="p-2 text-center font-medium"
+                        data-testid={`modal-text-back9-${playerIndex}`}
+                      >
+                        {getBack9Total(player.id) || '-'}
+                      </td>
+                    ))}
+                  </tr>
+                </>
+              )}
+              <tr className="border-t-2" data-testid="modal-row-total">
+                <td className="p-2 text-center font-bold" data-testid="modal-label-total">
+                  Total
+                </td>
+                {players.map((player, playerIndex) => (
+                  <td
+                    key={player.id}
+                    className="p-2 text-center font-bold"
+                    data-testid={`modal-text-total-${playerIndex}`}
+                  >
+                    {getPlayerTotal(player.id) || '-'}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </ScrollArea>
 
         <Button
