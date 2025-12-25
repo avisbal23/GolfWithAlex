@@ -27,8 +27,8 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <li>Enter player names (1-4)</li>
             <li>Tap a player to add a stroke</li>
             <li>Tap and hold to remove a stroke</li>
-            <li>Swipe right or tap "Finish Hole" to continue</li>
-            <li>Swipe left to go back to a hole</li>
+            <li>Swipe left or tap "Finish Hole" to continue</li>
+            <li>Swipe right to go back to a hole</li>
             <li>Hole 9 and 18 show subtotals and totals</li>
             <li>At the end, export your scorecard to share on socials</li>
           </ol>

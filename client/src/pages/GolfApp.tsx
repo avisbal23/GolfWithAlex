@@ -229,11 +229,11 @@ export function GolfApp() {
     // Only process horizontal swipes
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
       if (deltaX > 0) {
-        // Swipe right - advance to next hole
-        handleFinishHole();
-      } else {
-        // Swipe left - go back to previous hole
+        // Swipe right - go back to previous hole
         handlePreviousHole();
+      } else {
+        // Swipe left - advance to next hole
+        handleFinishHole();
       }
     }
     
