@@ -10,6 +10,7 @@ import { Scorecard } from '@/components/Scorecard';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BirdieCelebration } from '@/components/BirdieCelebration';
 import { ExportSelectModal } from '@/components/ExportSelectModal';
+import { HoleInfoModal } from '@/components/HoleInfoModal';
 import { ProfilePage } from './ProfilePage';
 import {
   GameState,
@@ -33,6 +34,8 @@ export function GolfApp() {
   const [showProfile, setShowProfile] = useState(false);
   const [showExportSelect, setShowExportSelect] = useState(false);
   const [exportPlayerIds, setExportPlayerIds] = useState<string[]>([]);
+  const [showHoleInfo, setShowHoleInfo] = useState(false);
+  const [pendingNextHole, setPendingNextHole] = useState<number | null>(null);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const scoringAreaRef = useRef<HTMLDivElement>(null);
@@ -128,10 +131,11 @@ export function GolfApp() {
   }, [gameState]);
 
   const loadHoleScores = useCallback((hole: number) => {
-    const { players, scores } = gameState;
+    const { players, scores, holeYardages } = gameState;
     
     const currentHoleStrokes: { [playerId: string]: number } = {};
     let currentHolePar: number | null = null;
+    const currentHoleYardage = holeYardages[hole] || null;
     
     players.forEach((player) => {
       const playerScores = scores[player.id] || [];
@@ -147,11 +151,11 @@ export function GolfApp() {
       }
     });
 
-    return { currentHoleStrokes, currentHolePar };
+    return { currentHoleStrokes, currentHolePar, currentHoleYardage };
   }, [gameState]);
 
   const handleFinishHole = useCallback(() => {
-    const { currentHole, roundSetup, players, currentHoleStrokes, currentHolePar } = gameState;
+    const { currentHole, roundSetup, players, currentHoleStrokes, currentHolePar, currentHoleYardage, holeYardages } = gameState;
     const totalHoles = roundSetup.holeCount;
     
     // Check if any player got a birdie or better
@@ -168,58 +172,85 @@ export function GolfApp() {
     // Save current hole scores
     const newScores = saveCurrentHoleScores();
     
+    // Save yardage for current hole
+    const newYardages = { ...holeYardages, [currentHole]: currentHoleYardage };
+    
     if (currentHole === 9 && totalHoles === 18) {
-      // Show front 9 subtotal
+      // Show front 9 subtotal, then prompt for hole 10 info
       setGameState((prev) => ({
         ...prev,
         scores: newScores,
+        holeYardages: newYardages,
         currentHole: 10,
         currentHoleStrokes: Object.fromEntries(
           prev.players.map((p) => [p.id, 0])
         ),
         currentHolePar: null,
+        currentHoleYardage: null,
       }));
       setShowSubtotal('front9');
+      setPendingNextHole(10);
     } else if (currentHole === totalHoles) {
       // Round complete
       setGameState((prev) => ({
         ...prev,
         scores: newScores,
+        holeYardages: newYardages,
         isRoundComplete: true,
       }));
       setShowSubtotal('round');
     } else {
-      // Move to next hole
+      // Move to next hole and show hole info prompt
+      const nextHole = currentHole + 1;
       setGameState((prev) => ({
         ...prev,
         scores: newScores,
-        currentHole: currentHole + 1,
+        holeYardages: newYardages,
+        currentHole: nextHole,
         currentHoleStrokes: Object.fromEntries(
           prev.players.map((p) => [p.id, 0])
         ),
         currentHolePar: null,
+        currentHoleYardage: null,
       }));
+      setPendingNextHole(nextHole);
+      setShowHoleInfo(true);
     }
   }, [gameState, saveCurrentHoleScores]);
 
+  const handleHoleInfoSubmit = useCallback((par: number | null, yardage: number | null) => {
+    setGameState((prev) => ({
+      ...prev,
+      currentHolePar: par,
+      currentHoleYardage: yardage,
+    }));
+    setPendingNextHole(null);
+    setShowHoleInfo(false);
+  }, []);
+
   const handlePreviousHole = useCallback(() => {
-    const { currentHole } = gameState;
+    const { currentHole, currentHoleYardage, holeYardages } = gameState;
     
     if (currentHole <= 1) return;
     
     // Save current hole scores first
     const newScores = saveCurrentHoleScores();
     
+    // Save current yardage
+    const newYardages = { ...holeYardages, [currentHole]: currentHoleYardage };
+    
     // Load previous hole scores
     const prevHole = currentHole - 1;
-    const { currentHoleStrokes, currentHolePar } = loadHoleScores(prevHole);
+    const { currentHoleStrokes, currentHolePar, currentHoleYardage: prevYardage } = loadHoleScores(prevHole);
     
     setGameState((prev) => ({
       ...prev,
       scores: newScores,
+      holeYardages: newYardages,
       currentHole: prevHole,
       currentHoleStrokes,
       currentHolePar,
+      currentHoleYardage: prevYardage,
     }));
   }, [gameState, saveCurrentHoleScores, loadHoleScores]);
 
@@ -549,6 +580,7 @@ export function GolfApp() {
             currentHole={gameState.currentHole}
             totalHoles={gameState.roundSetup.holeCount}
             par={gameState.currentHolePar}
+            yardage={gameState.currentHoleYardage}
             onParChange={handleParChange}
             onFinishHole={handleFinishHole}
             onResetHole={handleResetHole}
@@ -572,7 +604,13 @@ export function GolfApp() {
 
       <SubtotalModal
         isOpen={showSubtotal !== null}
-        onClose={() => setShowSubtotal(null)}
+        onClose={() => {
+          setShowSubtotal(null);
+          // Show hole info prompt for hole 10 after front 9 subtotal
+          if (showSubtotal === 'front9' && pendingNextHole === 10) {
+            setShowHoleInfo(true);
+          }
+        }}
         type={showSubtotal || 'front9'}
         players={gameState.players}
         scores={gameState.scores}
@@ -591,6 +629,16 @@ export function GolfApp() {
       <BirdieCelebration
         isVisible={showBirdieCelebration}
         onComplete={() => setShowBirdieCelebration(false)}
+      />
+
+      <HoleInfoModal
+        isOpen={showHoleInfo}
+        onClose={() => {
+          setShowHoleInfo(false);
+          setPendingNextHole(null);
+        }}
+        holeNumber={pendingNextHole || gameState.currentHole}
+        onSubmit={handleHoleInfoSubmit}
       />
     </div>
   );

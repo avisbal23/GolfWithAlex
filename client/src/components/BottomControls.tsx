@@ -7,6 +7,7 @@ interface BottomControlsProps {
   currentHole: number;
   totalHoles: number;
   par: number | null;
+  yardage?: number | null;
   onParChange: (par: number | null) => void;
   onFinishHole: () => void;
   onResetHole: () => void;
@@ -17,6 +18,7 @@ export function BottomControls({
   currentHole,
   totalHoles,
   par,
+  yardage,
   onParChange,
   onFinishHole,
   onResetHole,
@@ -39,6 +41,11 @@ export function BottomControls({
             Hole {currentHole}
           </span>
           <span className="text-sm text-muted-foreground" data-testid="text-total-holes"> / {totalHoles}</span>
+          {yardage && (
+            <span className="text-sm text-muted-foreground ml-2" data-testid="text-yardage">
+              ({yardage} yds)
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

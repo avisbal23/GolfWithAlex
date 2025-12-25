@@ -6,6 +6,7 @@ export interface Player {
 export interface HoleScore {
   strokes: number;
   par: number | null;
+  yardage?: number | null;
 }
 
 export interface PlayerScores {
@@ -29,6 +30,8 @@ export interface GameState {
   hasStarted: boolean;
   currentHoleStrokes: { [playerId: string]: number };
   currentHolePar: number | null;
+  currentHoleYardage: number | null;
+  holeYardages: { [hole: number]: number | null };
 }
 
 export type ScoreType = 'birdie' | 'par' | 'bogey' | 'double' | 'triple' | 'neutral';
@@ -78,6 +81,8 @@ export function createInitialGameState(): GameState {
     hasStarted: false,
     currentHoleStrokes: {},
     currentHolePar: null,
+    currentHoleYardage: null,
+    holeYardages: {},
   };
 }
 
