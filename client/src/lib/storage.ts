@@ -34,7 +34,19 @@ export function clearGameState(): void {
 export function getOrCreateGameState(): GameState {
   const saved = loadGameState();
   if (saved) {
-    return saved;
+    // Migrate old game states that might be missing new fields
+    const initial = createInitialGameState();
+    const migrated: GameState = {
+      ...initial,
+      ...saved,
+      roundSetup: {
+        ...initial.roundSetup,
+        ...saved.roundSetup,
+      },
+      // Ensure hasStarted has a boolean value (for old saves without it)
+      hasStarted: saved.hasStarted ?? false,
+    };
+    return migrated;
   }
   const initial = createInitialGameState();
   saveGameState(initial);
