@@ -1,0 +1,174 @@
+# Master Build Prompt — GolfWithAlex (Single-Page iPhone Golf Score App)
+
+Build a minimal, single-page, mobile-first golf scoring web app optimized for an iPhone in portrait (16:9). Everything must fit on one screen with no page navigation. Overlays/modals are allowed.
+
+---
+
+## 1. Core Concept
+Track a golf round for 1–4 players with fast, tap-based scoring designed for real play on the course.
+
+- No login
+- No backend/database
+- All state stored in browser memory + localStorage
+- Offline-friendly
+
+---
+
+## 2. Layout (Single Page)
+
+### Top Bar (always visible)
+- App title text: GolfWithAlex
+- Light / Dark mode toggle
+- “?” Help button
+- “View Current Score” button
+
+### Pre-Round Setup (Hole 1 only, compact)
+- Location input with autocomplete (Google Places or Mapbox; fallback to plain text if no key)
+- Course Name (auto-fill from location if possible)
+- Tees (dropdown/text: Tips, Blue, White, Red, Custom)
+- Date (default today, editable)
+- Select round length: 9 holes or 18 holes
+
+### Main Scoring Area
+Display 1, 2, 3, or 4 large clickable player boxes (tiles), one per player. Tiles auto-resize so all fit on screen.
+
+Each player tile must include:
+- Player name inside a clearly defined clickable name box (same tap target as the tile is fine)
+- Current hole stroke count (large)
+- Optional hint text: “tap +1 / hold -1” (can hide after first use)
+
+### Bottom Controls
+- Current hole indicator (e.g., “Hole 5 / 18”)
+- Par? numeric input for the current hole
+- Finish Hole button (alternative to swipe right)
+
+---
+
+## 3. Player Tile Interaction (Critical)
+For each player tile (clickable box):
+- Tap anywhere on the tile OR on the name box → +1 stroke
+- Tap-and-hold anywhere on the tile OR on the name box → −1 stroke (min 0)
+- Large tap targets for glove use
+- Optional haptic feedback
+
+### Dynamic color on the tile (live preview)
+The player tile background or border must change color dynamically based on:
+- The current Par? value for the hole
+- The player’s current stroke count
+
+If Par? is blank/undefined, use a neutral/default tile color.
+
+---
+
+## 4. Par-Based Color Logic (Use Everywhere)
+For a given hole:
+
+Par condition:
+- strokes == par → Green
+- strokes == par − 1 (birdie) → Gold
+- strokes == par + 1 (bogey) → Yellow
+- strokes == par + 2 (double bogey) → Medium Brown
+- strokes >= par + 3 → Light Red
+
+Apply this logic to:
+- Live player tiles during the hole (dynamic)
+- “View Current Score” grid cells
+- Final scorecard grid cells
+- Subtotal/total highlights (optional)
+
+---
+
+## 5. Swipe Navigation
+- Swipe right anywhere in the scoring area → commit scores + advance to next hole
+- Swipe left → go back to previous hole and restore scores/par
+- Ignore vertical swipes
+- Require a minimum swipe distance threshold to prevent accidents
+
+---
+
+## 6. Hole Completion Rules
+When a hole is completed (Finish Hole button or swipe right):
+- Save strokes for each player and the Par? for that hole
+- Advance hole index
+- Reset in-hole counters for the next hole (or load existing values if revisiting)
+
+Special confirmations:
+- Hole 9 completion → show Front 9 subtotal
+- Hole 18 completion → show Round Complete + totals
+
+---
+
+## 7. “View Current Score” (Always Available)
+A button visible at all times opens a modal/bottom-sheet overlay showing the full current score grid:
+
+- Columns: holes 1–9 or 1–18
+- Rows: players
+- Cells show strokes for completed holes (blank for future holes)
+- Apply par-based color logic when par exists
+- Show totals per player
+- Overlay is dismissible and non-destructive
+
+---
+
+## 8. Help “?” Modal (Always Available)
+Persistent “?” button opens a modal with the following copy:
+
+How to use GolfWithAlex
+1. Enter player names (1–4)
+2. Tap a player to add a stroke
+3. Tap and hold to remove a stroke
+4. Swipe right or tap “Finish Hole” to continue
+5. Swipe left to go back to a hole
+6. Hole 9 and 18 show subtotals and totals
+7. At the end, export your scorecard to share on socials
+
+---
+
+## 9. End-of-Round Scorecard
+When the round ends:
+- Replace scoring tiles with a full scorecard grid
+- Display header: Course Name · Tees · Date · Location
+- Grid shows all holes and totals
+- Apply par-based color logic
+- Everything fits on one screen
+
+---
+
+## 10. Export to PNG (iOS-Friendly)
+- “Save PNG” button visible on final scorecard
+- Export exactly what’s visible (header + grid)
+- Trigger iOS-compatible save/share behavior
+
+Watermark requirements:
+- Visible watermark text on the image:
+  - GolfWithAlex
+  - golfwithalex.me
+- On-screen watermark text must be a clickable link
+- PNG watermark is visual text + URL (PNG cannot embed links)
+
+---
+
+## 11. Theme & Persistence
+- Light/Dark mode toggle at top
+- Persist theme in localStorage
+- Persist in localStorage:
+  - Player names
+  - Scores per hole
+  - Par per hole
+  - Course details (location, course, tees, date)
+  - Current hole index
+  - 9 vs 18 selection
+
+---
+
+## 12. Technical Constraints & Deliverables
+- Single-page only (no routing)
+- Mobile-first responsive layout
+- High-contrast outdoor-readable design
+- Prevent negative strokes
+- Confirm before resetting round
+- Clean, readable code
+- Short README explaining:
+  - How to run locally
+  - Where data is stored
+  - How PNG export works
