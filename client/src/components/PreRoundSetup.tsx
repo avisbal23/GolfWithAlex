@@ -20,6 +20,7 @@ interface PreRoundSetupProps {
   onSetupChange: (setup: RoundSetup) => void;
   onPlayersChange: (players: Player[]) => void;
   onStart: () => void;
+  onNewRound: () => void;
 }
 
 export function PreRoundSetup({
@@ -30,6 +31,7 @@ export function PreRoundSetup({
   onSetupChange,
   onPlayersChange,
   onStart,
+  onNewRound,
 }: PreRoundSetupProps) {
   const [isExpanded, setIsExpanded] = useState(!hasStarted);
 
@@ -89,10 +91,10 @@ export function PreRoundSetup({
   }
 
   return (
-    <div className="px-4 py-3 bg-muted/30 border-b space-y-3">
+    <div className="px-3 py-2 bg-muted/30 border-b space-y-2">
       {hasStarted && (
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Round Details</span>
+          <span className="text-xs font-medium">Round Details</span>
           <Button
             size="sm"
             variant="ghost"
@@ -105,48 +107,37 @@ export function PreRoundSetup({
       )}
 
       <div className="grid grid-cols-2 gap-2">
-        <div className="col-span-2 space-y-1.5">
-          <Label htmlFor="location" className="text-xs text-muted-foreground flex items-center gap-1">
-            <MapPin className="w-3 h-3" />
-            Location
-          </Label>
+        <div className="space-y-1">
+          <Label htmlFor="location" className="text-xs text-muted-foreground">Location</Label>
           <Input
             id="location"
             type="text"
-            placeholder="City or course location"
+            placeholder="City"
             value={setup.location}
             onChange={(e) => updateSetup({ location: e.target.value })}
-            className="h-10"
+            className="h-8 text-sm"
             data-testid="input-location"
           />
         </div>
 
-        <div className="col-span-2 space-y-1.5">
-          <Label htmlFor="courseName" className="text-xs text-muted-foreground flex items-center gap-1">
-            <Flag className="w-3 h-3" />
-            Course Name
-          </Label>
+        <div className="space-y-1">
+          <Label htmlFor="courseName" className="text-xs text-muted-foreground">Course</Label>
           <Input
             id="courseName"
             type="text"
-            placeholder="e.g., Pebble Beach"
+            placeholder="Course name"
             value={setup.courseName}
             onChange={(e) => updateSetup({ courseName: e.target.value })}
-            className="h-10"
+            className="h-8 text-sm"
             data-testid="input-course-name"
           />
         </div>
 
-        <div className="col-span-2 space-y-1.5">
-          <Label htmlFor="tees" className="text-xs text-muted-foreground">
-            Tees
-          </Label>
-          <Select
-            value={setup.tees}
-            onValueChange={(val) => updateSetup({ tees: val })}
-          >
-            <SelectTrigger className="h-10" data-testid="select-tees">
-              <SelectValue placeholder="Select tees" />
+        <div className="space-y-1">
+          <Label htmlFor="tees" className="text-xs text-muted-foreground">Tees</Label>
+          <Select value={setup.tees} onValueChange={(val) => updateSetup({ tees: val })}>
+            <SelectTrigger className="h-8 text-sm" data-testid="select-tees">
+              <SelectValue placeholder="Tees" />
             </SelectTrigger>
             <SelectContent data-testid="select-tees-content">
               {TEES_OPTIONS.map((tee, index) => (
@@ -158,58 +149,54 @@ export function PreRoundSetup({
           </Select>
         </div>
 
-
-        <div className="col-span-2 space-y-1.5">
-          <Label className="text-xs text-muted-foreground" data-testid="label-round-length">Round Length</Label>
-          <div className="flex gap-2" data-testid="container-round-length">
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground">Holes</Label>
+          <div className="flex gap-1" data-testid="container-round-length">
             <Button
               variant={setup.holeCount === 9 ? 'default' : 'outline'}
-              className="flex-1"
+              size="sm"
+              className="flex-1 h-8"
               onClick={() => updateSetup({ holeCount: 9 })}
               data-testid="button-9-holes"
             >
-              9 Holes
+              9
             </Button>
             <Button
               variant={setup.holeCount === 18 ? 'default' : 'outline'}
-              className="flex-1"
+              size="sm"
+              className="flex-1 h-8"
               onClick={() => updateSetup({ holeCount: 18 })}
               data-testid="button-18-holes"
             >
-              18 Holes
+              18
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="space-y-2 pt-1">
+      <div className="space-y-1">
         <div className="flex items-center justify-between">
           <Label className="text-xs text-muted-foreground flex items-center gap-1">
             <Users className="w-3 h-3" />
             Players ({players.length}/4)
           </Label>
           {players.length < 4 && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={addPlayer}
-              data-testid="button-add-player"
-            >
-              <Plus className="w-4 h-4 mr-1" />
+            <Button size="sm" variant="ghost" onClick={addPlayer} data-testid="button-add-player">
+              <Plus className="w-3 h-3 mr-1" />
               Add
             </Button>
           )}
         </div>
 
-        <div className="grid gap-2" data-testid="container-players">
+        <div className="grid gap-1" data-testid="container-players">
           {players.map((player, index) => (
-            <div key={player.id} className="flex items-center gap-2" data-testid={`row-player-input-${index}`}>
+            <div key={player.id} className="flex items-center gap-1" data-testid={`row-player-input-${index}`}>
               <Input
                 type="text"
                 value={player.name}
                 onChange={(e) => updatePlayerName(player.id, e.target.value)}
                 placeholder={`Player ${index + 1}`}
-                className="h-10 flex-1"
+                className="h-8 text-sm flex-1"
                 data-testid={`input-player-name-${index}`}
                 aria-label={`Player ${index + 1} name`}
               />
@@ -218,11 +205,11 @@ export function PreRoundSetup({
                   size="icon"
                   variant="ghost"
                   onClick={() => removePlayer(player.id)}
-                  className="shrink-0 text-muted-foreground"
+                  className="shrink-0 text-muted-foreground h-8 w-8"
                   data-testid={`button-remove-player-${index}`}
                   aria-label={`Remove player ${index + 1}`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3" />
                 </Button>
               )}
             </div>
@@ -231,13 +218,20 @@ export function PreRoundSetup({
       </div>
 
       {!hasStarted && (
-        <Button
-          className="w-full mt-2"
-          size="lg"
-          onClick={onStart}
-          data-testid="button-start-round"
-        >
+        <Button className="w-full" onClick={onStart} data-testid="button-start-round">
           Start Round
+        </Button>
+      )}
+
+      {hasStarted && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={onNewRound}
+          data-testid="button-new-round-dropdown"
+        >
+          Start New Round
         </Button>
       )}
     </div>

@@ -501,6 +501,7 @@ export function GolfApp() {
         onSetupChange={handleSetupChange}
         onPlayersChange={handlePlayersChange}
         onStart={handleStartRound}
+        onNewRound={handleNewRound}
       />
 
       {gameState.hasStarted && (
