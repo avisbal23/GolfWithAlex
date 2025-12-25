@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Calendar, Flag, Users, ChevronDown, ChevronUp, Plus, X } from 'lucide-react';
+import { MapPin, Flag, Users, ChevronDown, ChevronUp, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -89,7 +89,7 @@ export function PreRoundSetup({
   }
 
   return (
-    <div className="px-4 py-4 bg-muted/30 border-b space-y-4">
+    <div className="px-4 py-3 bg-muted/30 border-b space-y-3">
       {hasStarted && (
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Round Details</span>
@@ -104,7 +104,7 @@ export function PreRoundSetup({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <div className="col-span-2 space-y-1.5">
           <Label htmlFor="location" className="text-xs text-muted-foreground flex items-center gap-1">
             <MapPin className="w-3 h-3" />
@@ -137,7 +137,7 @@ export function PreRoundSetup({
           />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="col-span-2 space-y-1.5">
           <Label htmlFor="tees" className="text-xs text-muted-foreground">
             Tees
           </Label>
@@ -158,20 +158,6 @@ export function PreRoundSetup({
           </Select>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="date" className="text-xs text-muted-foreground flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            Date
-          </Label>
-          <Input
-            id="date"
-            type="date"
-            value={setup.date}
-            onChange={(e) => updateSetup({ date: e.target.value })}
-            className="h-10"
-            data-testid="input-date"
-          />
-        </div>
 
         <div className="col-span-2 space-y-1.5">
           <Label className="text-xs text-muted-foreground" data-testid="label-round-length">Round Length</Label>
@@ -196,7 +182,7 @@ export function PreRoundSetup({
         </div>
       </div>
 
-      <div className="space-y-3 pt-2">
+      <div className="space-y-2 pt-1">
         <div className="flex items-center justify-between">
           <Label className="text-xs text-muted-foreground flex items-center gap-1">
             <Users className="w-3 h-3" />
