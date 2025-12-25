@@ -49,6 +49,10 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 95% 50%;
   --score-birdie-foreground: 45 90% 15%;
+  --score-eagle: 210 90% 50%;
+  --score-eagle-foreground: 0 0% 100%;
+  --score-albatross: 280 90% 55%;
+  --score-albatross-foreground: 0 0% 100%;
   --score-bogey: 270 60% 60%;
   --score-bogey-foreground: 270 70% 15%;
   --score-double: 30 60% 45%;
@@ -135,6 +139,10 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 90% 55%;
   --score-birdie-foreground: 45 90% 10%;
+  --score-eagle: 210 85% 55%;
+  --score-eagle-foreground: 0 0% 100%;
+  --score-albatross: 280 85% 60%;
+  --score-albatross-foreground: 0 0% 100%;
   --score-bogey: 270 55% 55%;
   --score-bogey-foreground: 270 100% 95%;
   --score-double: 30 55% 40%;
@@ -270,6 +278,18 @@
     border-color: hsl(var(--score-birdie));
   }
   
+  .score-eagle {
+    background-color: hsl(var(--score-eagle));
+    color: hsl(var(--score-eagle-foreground));
+    border-color: hsl(var(--score-eagle));
+  }
+  
+  .score-albatross {
+    background-color: hsl(var(--score-albatross));
+    color: hsl(var(--score-albatross-foreground));
+    border-color: hsl(var(--score-albatross));
+  }
+  
   .score-bogey {
     background-color: hsl(var(--score-bogey));
     color: hsl(var(--score-bogey-foreground));
@@ -301,6 +321,14 @@
   
   .score-birdie-border {
     border-color: hsl(var(--score-birdie));
+  }
+  
+  .score-eagle-border {
+    border-color: hsl(var(--score-eagle));
+  }
+  
+  .score-albatross-border {
+    border-color: hsl(var(--score-albatross));
   }
   
   .score-bogey-border {

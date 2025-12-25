@@ -34,7 +34,7 @@ export interface GameState {
   holeYardages: { [hole: number]: number | null };
 }
 
-export type ScoreType = 'birdie' | 'par' | 'bogey' | 'double' | 'triple' | 'neutral';
+export type ScoreType = 'albatross' | 'eagle' | 'birdie' | 'par' | 'bogey' | 'double' | 'triple' | 'neutral';
 
 export function getScoreType(strokes: number, par: number | null): ScoreType {
   if (par === null || par === 0) return 'neutral';
@@ -43,10 +43,11 @@ export function getScoreType(strokes: number, par: number | null): ScoreType {
   
   if (diff === 0) return 'par';
   if (diff === -1) return 'birdie';
+  if (diff === -2) return 'eagle';
+  if (diff <= -3) return 'albatross';
   if (diff === 1) return 'bogey';
   if (diff === 2) return 'double';
   if (diff >= 3) return 'triple';
-  if (diff <= -2) return 'birdie'; // Eagle or better treated as birdie color
   
   return 'neutral';
 }
