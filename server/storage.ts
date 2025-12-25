@@ -1,38 +1,65 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { profiles, scorecards, type Profile, type InsertProfile, type Scorecard, type InsertScorecard } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getProfile(userId: string): Promise<Profile | undefined>;
+  upsertProfile(userId: string, data: InsertProfile): Promise<Profile>;
+  
+  createScorecard(userId: string, data: InsertScorecard): Promise<Scorecard>;
+  getScorecard(id: string): Promise<Scorecard | undefined>;
+  getScorecardsByUser(userId: string): Promise<Scorecard[]>;
+  deleteScorecard(id: string, userId: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getProfile(userId: string): Promise<Profile | undefined> {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+    return profile;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async upsertProfile(userId: string, data: InsertProfile): Promise<Profile> {
+    const [profile] = await db
+      .insert(profiles)
+      .values({ ...data, userId })
+      .onConflictDoUpdate({
+        target: profiles.userId,
+        set: {
+          ...data,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return profile;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createScorecard(userId: string, data: InsertScorecard): Promise<Scorecard> {
+    const [scorecard] = await db
+      .insert(scorecards)
+      .values({ ...data, userId })
+      .returning();
+    return scorecard;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getScorecard(id: string): Promise<Scorecard | undefined> {
+    const [scorecard] = await db.select().from(scorecards).where(eq(scorecards.id, id));
+    return scorecard;
+  }
+
+  async getScorecardsByUser(userId: string): Promise<Scorecard[]> {
+    return await db
+      .select()
+      .from(scorecards)
+      .where(eq(scorecards.userId, userId))
+      .orderBy(desc(scorecards.createdAt));
+  }
+
+  async deleteScorecard(id: string, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(scorecards)
+      .where(eq(scorecards.id, id));
+    return true;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
