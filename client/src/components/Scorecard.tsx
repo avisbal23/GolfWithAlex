@@ -11,6 +11,7 @@ interface ScorecardProps {
   setup: RoundSetup;
   onNewRound: () => void;
   onExportPng: () => void;
+  selectedPlayerIds?: string[];
 }
 
 export function Scorecard({
@@ -19,8 +20,14 @@ export function Scorecard({
   setup,
   onNewRound,
   onExportPng,
+  selectedPlayerIds,
 }: ScorecardProps) {
   const holes = Array.from({ length: setup.holeCount }, (_, i) => i + 1);
+  
+  // Filter players based on selection (for export), default to all
+  const displayPlayers = selectedPlayerIds 
+    ? players.filter(p => selectedPlayerIds.includes(p.id))
+    : players;
 
   const getFront9Total = (playerId: string): number => {
     const playerScores = scores[playerId] || [];
@@ -79,7 +86,7 @@ export function Scorecard({
                 <th className="p-2 text-center font-medium min-w-[40px]" data-testid="header-hole">
                   Hole
                 </th>
-                {players.map((player, playerIndex) => (
+                {displayPlayers.map((player, playerIndex) => (
                   <th
                     key={player.id}
                     className="p-2 text-center font-medium truncate max-w-[80px]"
@@ -96,7 +103,7 @@ export function Scorecard({
                   <td className="p-2 text-center font-medium" data-testid={`text-hole-${hole}`}>
                     {hole}
                   </td>
-                  {players.map((player, playerIndex) => {
+                  {displayPlayers.map((player, playerIndex) => {
                     const playerScores = scores[player.id] || [];
                     const score = playerScores[hole - 1];
                     const colorClass = score && score.strokes > 0
@@ -120,7 +127,7 @@ export function Scorecard({
                   <td className="p-2 text-center font-medium" data-testid="label-front9">
                     Front 9
                   </td>
-                  {players.map((player, playerIndex) => (
+                  {displayPlayers.map((player, playerIndex) => (
                     <td
                       key={player.id}
                       className="p-2 text-center font-medium"
@@ -136,7 +143,7 @@ export function Scorecard({
                   <td className="p-2 text-center font-medium" data-testid="label-back9">
                     Back 9
                   </td>
-                  {players.map((player, playerIndex) => (
+                  {displayPlayers.map((player, playerIndex) => (
                     <td
                       key={player.id}
                       className="p-2 text-center font-medium"
@@ -151,7 +158,7 @@ export function Scorecard({
                 <td className="p-2 text-center font-bold" data-testid="label-total">
                   Total
                 </td>
-                {players.map((player, playerIndex) => (
+                {displayPlayers.map((player, playerIndex) => (
                   <td
                     key={player.id}
                     className="p-2 text-center font-bold"

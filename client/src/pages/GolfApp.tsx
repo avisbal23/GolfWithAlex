@@ -9,6 +9,7 @@ import { SubtotalModal } from '@/components/SubtotalModal';
 import { Scorecard } from '@/components/Scorecard';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BirdieCelebration } from '@/components/BirdieCelebration';
+import { ExportSelectModal } from '@/components/ExportSelectModal';
 import { ProfilePage } from './ProfilePage';
 import {
   GameState,
@@ -30,6 +31,8 @@ export function GolfApp() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showBirdieCelebration, setShowBirdieCelebration] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showExportSelect, setShowExportSelect] = useState(false);
+  const [exportPlayerIds, setExportPlayerIds] = useState<string[]>([]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const scoringAreaRef = useRef<HTMLDivElement>(null);
@@ -270,7 +273,19 @@ export function GolfApp() {
     setHasInteracted(false);
   }, []);
 
-  const handleExportPng = useCallback(async () => {
+  const handleOpenExportSelect = useCallback(() => {
+    setExportPlayerIds(gameState.players.map(p => p.id));
+    setShowExportSelect(true);
+  }, [gameState.players]);
+
+  const handleExportPng = useCallback(async (selectedPlayerIds: string[]) => {
+    // Set the selected player IDs so scorecard renders with only selected players
+    setExportPlayerIds(selectedPlayerIds);
+    setShowExportSelect(false);
+    
+    // Wait for the scorecard to re-render with selected players
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     const element = document.getElementById('scorecard-export');
     if (!element) return;
 
@@ -308,9 +323,13 @@ export function GolfApp() {
         }
         
         URL.revokeObjectURL(url);
+        
+        // Reset to show all players after export
+        setExportPlayerIds([]);
       }, 'image/png');
     } catch (error) {
       console.error('Failed to export PNG:', error);
+      setExportPlayerIds([]);
     }
   }, [gameState.roundSetup.date]);
 
@@ -457,7 +476,8 @@ export function GolfApp() {
             scores={gameState.scores}
             setup={gameState.roundSetup}
             onNewRound={handleNewRound}
-            onExportPng={handleExportPng}
+            onExportPng={handleOpenExportSelect}
+            selectedPlayerIds={exportPlayerIds.length > 0 ? exportPlayerIds : undefined}
           />
         </main>
 
@@ -472,6 +492,13 @@ export function GolfApp() {
           totalHoles={gameState.roundSetup.holeCount}
           currentHoleStrokes={gameState.currentHoleStrokes}
           currentHolePar={gameState.currentHolePar}
+        />
+
+        <ExportSelectModal
+          isOpen={showExportSelect}
+          onClose={() => setShowExportSelect(false)}
+          players={gameState.players}
+          onExport={handleExportPng}
         />
 
         <ConfirmDialog
