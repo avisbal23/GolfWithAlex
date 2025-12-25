@@ -9,6 +9,7 @@ import { SubtotalModal } from '@/components/SubtotalModal';
 import { Scorecard } from '@/components/Scorecard';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BirdieCelebration } from '@/components/BirdieCelebration';
+import { ProfilePage } from './ProfilePage';
 import {
   GameState,
   Player,
@@ -28,6 +29,7 @@ export function GolfApp() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showBirdieCelebration, setShowBirdieCelebration] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const scoringAreaRef = useRef<HTMLDivElement>(null);
@@ -327,6 +329,11 @@ export function GolfApp() {
     }
   };
 
+  // Show profile page
+  if (showProfile) {
+    return <ProfilePage onBack={() => setShowProfile(false)} />;
+  }
+
   // Show scorecard when round is complete
   if (gameState.isRoundComplete && !showSubtotal) {
     return (
@@ -334,6 +341,7 @@ export function GolfApp() {
         <TopBar
           onHelpClick={() => setShowHelp(true)}
           onViewScoreClick={() => setShowScore(true)}
+          onProfileClick={() => setShowProfile(true)}
         />
         
         <main className="flex-1 overflow-auto">
@@ -377,6 +385,7 @@ export function GolfApp() {
       <TopBar
         onHelpClick={() => setShowHelp(true)}
         onViewScoreClick={() => setShowScore(true)}
+        onProfileClick={() => setShowProfile(true)}
       />
 
       <PreRoundSetup

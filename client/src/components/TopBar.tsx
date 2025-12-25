@@ -1,14 +1,17 @@
-import { Sun, Moon, HelpCircle, BarChart3 } from 'lucide-react';
+import { Sun, Moon, HelpCircle, BarChart3, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from './ThemeProvider';
+import { useAuth } from '@/hooks/use-auth';
 
 interface TopBarProps {
   onHelpClick: () => void;
   onViewScoreClick: () => void;
+  onProfileClick: () => void;
 }
 
-export function TopBar({ onHelpClick, onViewScoreClick }: TopBarProps) {
+export function TopBar({ onHelpClick, onViewScoreClick, onProfileClick }: TopBarProps) {
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <header className="h-14 px-4 flex items-center justify-between gap-2 border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50" data-testid="container-top-bar">
@@ -50,6 +53,22 @@ export function TopBar({ onHelpClick, onViewScoreClick }: TopBarProps) {
             <Sun className="w-5 h-5" />
           )}
         </Button>
+
+        {!isLoading && (
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={isAuthenticated ? onProfileClick : () => window.location.href = '/api/login'}
+            data-testid="button-profile"
+            aria-label={isAuthenticated ? 'Profile' : 'Sign in'}
+          >
+            {isAuthenticated ? (
+              <User className="w-5 h-5" />
+            ) : (
+              <LogIn className="w-5 h-5" />
+            )}
+          </Button>
+        )}
       </div>
     </header>
   );
