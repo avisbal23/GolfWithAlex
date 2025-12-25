@@ -49,8 +49,8 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 95% 50%;
   --score-birdie-foreground: 45 90% 15%;
-  --score-bogey: 48 90% 55%;
-  --score-bogey-foreground: 48 70% 15%;
+  --score-bogey: 270 60% 60%;
+  --score-bogey-foreground: 270 70% 15%;
   --score-double: 30 60% 45%;
   --score-double-foreground: 0 0% 100%;
   --score-triple: 0 70% 55%;
@@ -135,8 +135,8 @@
   --score-par-foreground: 0 0% 100%;
   --score-birdie: 45 90% 55%;
   --score-birdie-foreground: 45 90% 10%;
-  --score-bogey: 48 85% 50%;
-  --score-bogey-foreground: 48 70% 10%;
+  --score-bogey: 270 55% 55%;
+  --score-bogey-foreground: 270 100% 95%;
   --score-double: 30 55% 40%;
   --score-double-foreground: 0 0% 100%;
   --score-triple: 0 65% 50%;
