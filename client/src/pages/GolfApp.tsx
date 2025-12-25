@@ -349,20 +349,22 @@ export function GolfApp() {
 
     if (count === 2) {
       return (
-        <div className="grid grid-cols-2 gap-4 h-full place-content-center">
-          {players.map((player, index) => (
-            <PlayerTile
-              key={player.id}
-              name={player.name}
-              strokes={gameState.currentHoleStrokes[player.id] || 0}
-              par={gameState.currentHolePar}
-              showHint={!hasInteracted && index === 0}
-              onIncrement={() => handleIncrement(player.id)}
-              onDecrement={() => handleDecrement(player.id)}
-              testId={`tile-player-${index}`}
-              compact={false}
-            />
-          ))}
+        <div className="flex items-center justify-center h-full">
+          <div className="grid grid-cols-2 gap-4 w-full max-h-[320px]">
+            {players.map((player, index) => (
+              <PlayerTile
+                key={player.id}
+                name={player.name}
+                strokes={gameState.currentHoleStrokes[player.id] || 0}
+                par={gameState.currentHolePar}
+                showHint={!hasInteracted && index === 0}
+                onIncrement={() => handleIncrement(player.id)}
+                onDecrement={() => handleDecrement(player.id)}
+                testId={`tile-player-${index}`}
+                compact={true}
+              />
+            ))}
+          </div>
         </div>
       );
     }
