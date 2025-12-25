@@ -72,75 +72,97 @@ export function Scorecard({
           </p>
         </div>
 
-        <ScrollArea className="w-full">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="border-b" data-testid="row-header">
-                  <th className="sticky left-0 bg-card p-2 text-left font-medium min-w-[80px]" data-testid="header-player">
-                    Player
-                  </th>
-                  {holes.map((hole) => (
-                    <th key={hole} className="p-2 text-center font-medium min-w-[32px]" data-testid={`header-hole-${hole}`}>
-                      {hole}
-                    </th>
-                  ))}
-                  {setup.holeCount === 18 && (
-                    <>
-                      <th className="p-2 text-center font-medium min-w-[36px] border-l-2" data-testid="header-front9">
-                        F9
-                      </th>
-                      <th className="p-2 text-center font-medium min-w-[36px]" data-testid="header-back9">
-                        B9
-                      </th>
-                    </>
-                  )}
-                  <th className="p-2 text-center font-medium min-w-[40px] border-l-2" data-testid="header-total">
-                    Tot
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+        <ScrollArea className="w-full max-h-[60vh]">
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 bg-card z-10">
+              <tr className="border-b" data-testid="row-header">
+                <th className="p-2 text-center font-medium min-w-[40px]" data-testid="header-hole">
+                  Hole
+                </th>
                 {players.map((player, playerIndex) => (
-                  <tr key={player.id} className="border-b" data-testid={`row-player-${playerIndex}`}>
-                    <td className="sticky left-0 bg-card p-2 font-medium truncate max-w-[100px]" data-testid={`text-player-name-${playerIndex}`}>
-                      {player.name}
-                    </td>
-                    {holes.map((hole) => {
-                      const playerScores = scores[player.id] || [];
-                      const score = playerScores[hole - 1];
-                      const colorClass = score && score.strokes > 0
-                        ? getScoreColorClass(score.strokes, score.par)
-                        : '';
-
-                      return (
-                        <td
-                          key={hole}
-                          className={`p-2 text-center ${colorClass ? colorClass + ' rounded-sm' : ''}`}
-                          data-testid={`cell-score-${playerIndex}-${hole}`}
-                        >
-                          {score?.strokes || '-'}
-                        </td>
-                      );
-                    })}
-                    {setup.holeCount === 18 && (
-                      <>
-                        <td className="p-2 text-center font-medium border-l-2" data-testid={`text-front9-${playerIndex}`}>
-                          {getFront9Total(player.id)}
-                        </td>
-                        <td className="p-2 text-center font-medium" data-testid={`text-back9-${playerIndex}`}>
-                          {getBack9Total(player.id)}
-                        </td>
-                      </>
-                    )}
-                    <td className="p-2 text-center font-bold border-l-2" data-testid={`text-total-${playerIndex}`}>
-                      {getTotalScore(player.id)}
-                    </td>
-                  </tr>
+                  <th
+                    key={player.id}
+                    className="p-2 text-center font-medium truncate max-w-[80px]"
+                    data-testid={`header-player-${playerIndex}`}
+                  >
+                    {player.name}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </tr>
+            </thead>
+            <tbody>
+              {holes.map((hole) => (
+                <tr key={hole} className="border-b" data-testid={`row-hole-${hole}`}>
+                  <td className="p-2 text-center font-medium" data-testid={`text-hole-${hole}`}>
+                    {hole}
+                  </td>
+                  {players.map((player, playerIndex) => {
+                    const playerScores = scores[player.id] || [];
+                    const score = playerScores[hole - 1];
+                    const colorClass = score && score.strokes > 0
+                      ? getScoreColorClass(score.strokes, score.par)
+                      : '';
+
+                    return (
+                      <td
+                        key={player.id}
+                        className={`p-2 text-center ${colorClass ? colorClass + ' rounded-sm' : ''}`}
+                        data-testid={`cell-score-${playerIndex}-${hole}`}
+                      >
+                        {score?.strokes || '-'}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+              {setup.holeCount === 18 && (
+                <tr className="border-b border-t-2" data-testid="row-front9">
+                  <td className="p-2 text-center font-medium" data-testid="label-front9">
+                    F9
+                  </td>
+                  {players.map((player, playerIndex) => (
+                    <td
+                      key={player.id}
+                      className="p-2 text-center font-medium"
+                      data-testid={`text-front9-${playerIndex}`}
+                    >
+                      {getFront9Total(player.id)}
+                    </td>
+                  ))}
+                </tr>
+              )}
+              {setup.holeCount === 18 && (
+                <tr className="border-b" data-testid="row-back9">
+                  <td className="p-2 text-center font-medium" data-testid="label-back9">
+                    B9
+                  </td>
+                  {players.map((player, playerIndex) => (
+                    <td
+                      key={player.id}
+                      className="p-2 text-center font-medium"
+                      data-testid={`text-back9-${playerIndex}`}
+                    >
+                      {getBack9Total(player.id)}
+                    </td>
+                  ))}
+                </tr>
+              )}
+              <tr className="border-t-2" data-testid="row-total">
+                <td className="p-2 text-center font-bold" data-testid="label-total">
+                  Total
+                </td>
+                {players.map((player, playerIndex) => (
+                  <td
+                    key={player.id}
+                    className="p-2 text-center font-bold"
+                    data-testid={`text-total-${playerIndex}`}
+                  >
+                    {getTotalScore(player.id)}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </ScrollArea>
 
         <div className="pt-4 mt-4 border-t flex items-center justify-between text-xs text-muted-foreground" data-testid="container-watermark">
