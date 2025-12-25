@@ -114,7 +114,7 @@ export function PlayerTile({
     <button
       type="button"
       className={`
-        relative flex flex-col w-full h-full min-h-[140px] max-h-[400px]
+        relative flex flex-col w-full min-h-[280px] max-h-[400px]
         rounded-2xl border-[3px] p-4 transition-all duration-100
         select-none touch-manipulation cursor-pointer
         ${borderClass}
