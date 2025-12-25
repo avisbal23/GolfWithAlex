@@ -11,6 +11,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BirdieCelebration } from '@/components/BirdieCelebration';
 import { ExportSelectModal } from '@/components/ExportSelectModal';
 import { HoleInfoModal } from '@/components/HoleInfoModal';
+import { HoleJumpModal } from '@/components/HoleJumpModal';
 import { ProfilePage } from './ProfilePage';
 import {
   GameState,
@@ -36,6 +37,7 @@ export function GolfApp() {
   const [exportPlayerIds, setExportPlayerIds] = useState<string[]>([]);
   const [showHoleInfo, setShowHoleInfo] = useState(false);
   const [pendingNextHole, setPendingNextHole] = useState<number | null>(null);
+  const [showHoleJump, setShowHoleJump] = useState(false);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const scoringAreaRef = useRef<HTMLDivElement>(null);
@@ -227,6 +229,31 @@ export function GolfApp() {
     setPendingNextHole(null);
     setShowHoleInfo(false);
   }, []);
+
+  const handleJumpToHole = useCallback((targetHole: number) => {
+    const { currentHole, currentHoleYardage, holeYardages } = gameState;
+    
+    if (targetHole === currentHole) return;
+    
+    // Save current hole scores first
+    const newScores = saveCurrentHoleScores();
+    
+    // Save current yardage
+    const newYardages = { ...holeYardages, [currentHole]: currentHoleYardage };
+    
+    // Load target hole scores
+    const { currentHoleStrokes, currentHolePar, currentHoleYardage: targetYardage } = loadHoleScores(targetHole);
+    
+    setGameState((prev) => ({
+      ...prev,
+      scores: newScores,
+      holeYardages: newYardages,
+      currentHole: targetHole,
+      currentHoleStrokes,
+      currentHolePar,
+      currentHoleYardage: targetYardage,
+    }));
+  }, [gameState, saveCurrentHoleScores, loadHoleScores]);
 
   const handlePreviousHole = useCallback(() => {
     const { currentHole, currentHoleYardage, holeYardages } = gameState;
@@ -584,6 +611,7 @@ export function GolfApp() {
             onParChange={handleParChange}
             onFinishHole={handleFinishHole}
             onResetHole={handleResetHole}
+            onHoleLongPress={() => setShowHoleJump(true)}
             isLastHole={gameState.currentHole === gameState.roundSetup.holeCount}
           />
         </>
@@ -639,6 +667,14 @@ export function GolfApp() {
         }}
         holeNumber={pendingNextHole || gameState.currentHole}
         onSubmit={handleHoleInfoSubmit}
+      />
+
+      <HoleJumpModal
+        isOpen={showHoleJump}
+        onClose={() => setShowHoleJump(false)}
+        currentHole={gameState.currentHole}
+        totalHoles={gameState.roundSetup.holeCount}
+        onSelectHole={handleJumpToHole}
       />
     </div>
   );

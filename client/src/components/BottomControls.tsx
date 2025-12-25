@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react';
 import { ChevronRight, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ interface BottomControlsProps {
   onParChange: (par: number | null) => void;
   onFinishHole: () => void;
   onResetHole: () => void;
+  onHoleLongPress: () => void;
   isLastHole: boolean;
 }
 
@@ -22,8 +24,31 @@ export function BottomControls({
   onParChange,
   onFinishHole,
   onResetHole,
+  onHoleLongPress,
   isLastHole,
 }: BottomControlsProps) {
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const isLongPress = useRef(false);
+
+  const handleTouchStart = useCallback(() => {
+    isLongPress.current = false;
+    longPressTimer.current = setTimeout(() => {
+      isLongPress.current = true;
+      onHoleLongPress();
+    }, 500);
+  }, [onHoleLongPress]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
+
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    onHoleLongPress();
+  }, [onHoleLongPress]);
   const handleParChange = (value: string) => {
     const num = parseInt(value, 10);
     if (value === '' || isNaN(num)) {
@@ -36,7 +61,17 @@ export function BottomControls({
   return (
     <div className="px-3 py-2 border-t bg-card/80 backdrop-blur-sm space-y-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-center gap-3">
-        <div className="text-center" data-testid="text-hole-indicator">
+        <div 
+          className="text-center cursor-pointer select-none px-2 py-1 rounded-md hover-elevate active-elevate-2" 
+          data-testid="text-hole-indicator"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          onMouseDown={handleTouchStart}
+          onMouseUp={handleTouchEnd}
+          onMouseLeave={handleTouchEnd}
+          onContextMenu={handleContextMenu}
+        >
           <span className="text-base font-semibold" data-testid="text-current-hole">
             Hole {currentHole}
           </span>
