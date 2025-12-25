@@ -34,6 +34,12 @@ export function PreRoundSetup({
   const [isExpanded, setIsExpanded] = useState(!hasStarted);
 
   useEffect(() => {
+    if (hasStarted) {
+      setIsExpanded(false);
+    }
+  }, [hasStarted]);
+
+  useEffect(() => {
     if (currentHole > 1 && isExpanded) {
       setIsExpanded(false);
     }
