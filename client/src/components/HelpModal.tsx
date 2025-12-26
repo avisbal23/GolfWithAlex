@@ -29,6 +29,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <li>Tap and hold to remove a stroke</li>
             <li>Swipe left or tap "Finish Hole" to continue</li>
             <li>Swipe right to go back to a hole</li>
+            <li>Tap and hold on hole number to jump to any hole</li>
             <li>Hole 9 and 18 show subtotals and totals</li>
             <li>At the end, export your scorecard to share on socials</li>
           </ol>
@@ -36,6 +37,14 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
           <div className="pt-4 border-t" data-testid="container-score-colors">
             <h4 className="font-medium mb-2" data-testid="text-score-colors-title">Score Colors</h4>
             <div className="grid grid-cols-2 gap-2 text-sm" data-testid="grid-score-colors">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded score-albatross" />
+                <span>Albatross (-3+)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded score-eagle" />
+                <span>Eagle (-2)</span>
+              </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded score-birdie" />
                 <span>Birdie (-1)</span>
